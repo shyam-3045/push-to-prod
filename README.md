@@ -1,5 +1,13 @@
 # 🥬 Farm2Retail – Auction based Produce Allocation
 
+## 🧩 Problem Statement
+
+Agricultural produce trading today is largely driven by **manual negotiations, opaque pricing mechanisms, and intermediary-controlled markets**, which often result in **unfair price realization for farmers** and **limited price visibility for retailers**.
+
+Small and medium-scale farmers frequently lack access to a transparent platform where their produce can be exposed to **competitive demand**, while retailers and wholesalers face challenges in discovering fair prices due to **information asymmetry** and **restricted participation**.
+
+Existing digital solutions often prioritize feature richness over **correctness, fairness, and robustness**, leading to systems that are vulnerable to manipulation, inconsistent auction outcomes, and unreliable transaction flows—especially under concurrent usage or adversarial conditions.
+
 ## Overview
 
 Farm2Retail is an auction-based resource allocation platform designed that enables **transparent produce (Fruits & Vegetables) selling, competitive price discovery** between farmers and retailers/wholesalers.
