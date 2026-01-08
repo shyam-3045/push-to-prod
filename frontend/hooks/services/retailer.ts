@@ -24,3 +24,14 @@ export const getWonBids = async () => {
 
   return res.data;
 };
+
+export const getFarmerForWonBid = async (bidId: string) => {
+  const res = await axios.get(
+    `${API_URL}/retailer/bids/${bidId}/farmer`
+  , {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return res.data.data;
+};

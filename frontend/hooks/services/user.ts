@@ -18,3 +18,13 @@ export const getUserById = async (id: string): Promise<User> => {
 
   return res.data.data;
 };
+
+
+export const getMyProfile = async () => {
+  const res = await axios.get(`${API_URL}/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return res.data.data;
+};

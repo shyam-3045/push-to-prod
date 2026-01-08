@@ -40,7 +40,7 @@ exports.placeBid = async (req, res, next) => {
     }
 
    
-    if (bidAmount < produce.minBidPerBox) {
+    if (bidAmount < produce.minBidAmount) {
       return next(new AppError("Bid below minimum allowed", 400));
     }
 
@@ -162,7 +162,7 @@ exports.getRunningBids = async (req, res, next) => {
           name: 1,
           category: 1,
           totalQuantityKg: 1,
-          minBidPerBox: 1,
+          minBidAmount: 1,
           bidEndTime: 1,
           currentBid: 1
         }

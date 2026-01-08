@@ -14,7 +14,7 @@ export interface Produce {
   category: ProduceCategory;
   totalQuantityKg: number;
   pricePerKg: number;
-  minBidPerBox: number;
+  minBidAmount: number;
   bidDurationMinutes: number;
   status: ProduceStatus;
   createdAt: string;

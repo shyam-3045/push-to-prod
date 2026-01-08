@@ -7,6 +7,10 @@ import { useRetailerProduces } from "@/hooks/customHooks/useRetailerProducts";
 import { useRunningBids } from "@/hooks/customHooks/useRunningBids";
 import { usePlaceBid } from "@/hooks/customHooks/usePlaceBid";
 import { useWonBids } from "@/hooks/customHooks/useWonBids";
+import { useFarmerForWonBid } from "@/hooks/customHooks/useFarmerForWonBid";
+import { useQueryClient } from "@tanstack/react-query";
+
+
 
 export default function RetailerDashboard() {
   const router = useRouter();
@@ -17,7 +21,10 @@ export default function RetailerDashboard() {
     isError: producesError,
   } = useRetailerProduces();
 
+  const [selectedBidId, setSelectedBidId] = useState<string | null>(null);
+  const { data: farmer } = useFarmerForWonBid(selectedBidId);
   const { data: wonBidsData, isLoading: wonBidsLoading } = useWonBids();
+  const queryClient = useQueryClient();
 
   const {
     data: runningBidsData,
@@ -66,6 +73,7 @@ export default function RetailerDashboard() {
   };
 
   const handleLogout = () => {
+    queryClient.clear();
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     router.replace("/");
@@ -91,6 +99,12 @@ export default function RetailerDashboard() {
         >
           Logout
         </button>
+        <button
+          onClick={() => router.push("/profile")}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          View Profile
+        </button>
       </div>
 
       {/* AVAILABLE PRODUCES */}
@@ -111,7 +125,7 @@ export default function RetailerDashboard() {
             <p>Category: {produce.category}</p>
             <p>Total Quantity: {produce.totalQuantityKg} kg</p>
             <p>Price / kg: ₹{produce.pricePerKg}</p>
-            <p>Min Bid / Box: ₹{produce.minBidPerBox}</p>
+            <p>Min Bid / Box: ₹{produce.minBidAmount}</p>
           </div>
 
           <div className="mt-3 border-t pt-2 text-sm text-gray-600">
@@ -124,7 +138,7 @@ export default function RetailerDashboard() {
           <div className="mt-3 flex gap-2 items-center">
             <input
               type="number"
-              min={produce.minBidPerBox}
+              min={produce.minBidAmount}
               placeholder="Your bid"
               value={bidAmounts[produce._id] || ""}
               onChange={(e) => handleBidChange(produce._id, e.target.value)}
@@ -132,7 +146,7 @@ export default function RetailerDashboard() {
             />
 
             <button
-              onClick={() => handlePlaceBid(produce._id, produce.minBidPerBox)}
+              onClick={() => handlePlaceBid(produce._id, produce.minBidAmount)}
               disabled={isPending}
               className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 disabled:opacity-50"
             >
@@ -168,7 +182,7 @@ export default function RetailerDashboard() {
                 <div className="mt-2 text-sm text-gray-700 space-y-1">
                   <p>Category: {produce.category}</p>
                   <p>Total Quantity: {produce.totalQuantityKg} kg</p>
-                  <p>Min Bid / Box: ₹{produce.minBidPerBox}</p>
+                  <p>Min Bid / Box: ₹{produce.minBidAmount}</p>
                   <p>
                     Bid Ends At:{" "}
                     {new Date(produce.bidEndTime).toLocaleTimeString()}
@@ -190,7 +204,7 @@ export default function RetailerDashboard() {
                       min={
                         currentBidAmount
                           ? currentBidAmount + 1
-                          : produce.minBidPerBox
+                          : produce.minBidAmount
                       }
                       placeholder="Your bid"
                       value={bidAmounts[produce._id] || ""}
@@ -204,7 +218,7 @@ export default function RetailerDashboard() {
                       onClick={() =>
                         handlePlaceBid(
                           produce._id,
-                          produce.minBidPerBox,
+                          produce.minBidAmount,
                           currentBidAmount
                         )
                       }
@@ -246,6 +260,26 @@ export default function RetailerDashboard() {
                   Winning Bid: ₹{bid.bidAmount}
                 </p>
               </div>
+              <button
+                onClick={() => setSelectedBidId(bid._id)}
+                className="mt-3 text-sm text-blue-600 hover:underline"
+              >
+                View Farmer Details
+              </button>
+
+              {selectedBidId === bid._id && farmer && (
+                <div className="mt-3 border rounded p-3 bg-white text-sm">
+                  <p>
+                    <b>Name:</b> {farmer.name}
+                  </p>
+                  <p>
+                    <b>Email:</b> {farmer.email}
+                  </p>
+                  <p>
+                    <b>Address:</b> {farmer.address}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
 

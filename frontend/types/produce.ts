@@ -7,7 +7,7 @@ export interface Produce {
   category: ProduceCategory;
   totalQuantityKg: number;
   pricePerKg: number;
-  minBidPerBox: number;
+  minBidAmount: number;
   status: ProduceStatus;
 }
 export interface ProduceForm {
@@ -15,7 +15,7 @@ export interface ProduceForm {
   category: ProduceCategory;
   totalQuantityKg: string;
   pricePerKg: string;
-  minBidPerBox: string;
+  minBidAmount: string;
   bidDurationMinutes: number;
 }
 
@@ -32,7 +32,7 @@ export interface RunningBidProduce {
   name: string;
   category: ProduceCategory;
   totalQuantityKg: number;
-  minBidPerBox: number;
+  minBidAmount: number;
   bidEndTime: string;
   currentBid: CurrentBid | null;
 }

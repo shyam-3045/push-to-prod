@@ -96,3 +96,18 @@ exports.signup = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getMyProfile = async (req, res, next) => {
+  const user = await User.findById(req.user.id).select(
+    "name email role address"
+  );
+
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: user
+  });
+};

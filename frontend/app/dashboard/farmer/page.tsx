@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useProduces } from "@/hooks/customHooks/useProduces";
 import { useCreateProduce } from "@/hooks/customHooks/useCreateProduce";
 import { Produce, ProduceForm } from "@/types/produce";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function FarmerDashboard() {
   const router = useRouter();
-
+  const queryClient = useQueryClient();
   const { data, isLoading, isError } = useProduces();
   const { mutate: createProduce, isPending } = useCreateProduce();
 
@@ -19,7 +20,7 @@ export default function FarmerDashboard() {
     category: "FRUIT",
     totalQuantityKg: "",
     pricePerKg: "",
-    minBidPerBox: "",
+    minBidAmount: "",
     bidDurationMinutes: 5,
   });
 
@@ -39,7 +40,7 @@ export default function FarmerDashboard() {
         category: form.category,
         totalQuantityKg: Number(form.totalQuantityKg),
         pricePerKg: Number(form.pricePerKg),
-        minBidPerBox: Number(form.minBidPerBox),
+        minBidAmount: Number(form.minBidAmount),
         bidDurationMinutes: form.bidDurationMinutes,
       },
       {
@@ -50,7 +51,7 @@ export default function FarmerDashboard() {
             category: "FRUIT",
             totalQuantityKg: "",
             pricePerKg: "",
-            minBidPerBox: "",
+            minBidAmount: "",
             bidDurationMinutes: 5,
           });
         },
@@ -59,6 +60,7 @@ export default function FarmerDashboard() {
   };
 
   const handleLogout = () => {
+    queryClient.clear();
     localStorage.removeItem("token");
     localStorage.removeItem("role");
     router.replace("/");
@@ -80,6 +82,12 @@ export default function FarmerDashboard() {
             className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
           >
             Add Produce
+          </button>
+          <button
+            onClick={() => router.push("/profile")}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            View Profile
           </button>
 
           <button
@@ -119,7 +127,7 @@ export default function FarmerDashboard() {
               <p>Category: {produce.category}</p>
               <p>Total Quantity: {produce.totalQuantityKg} kg</p>
               <p>Price / kg: ₹{produce.pricePerKg}</p>
-              <p>Min Bid / Box: ₹{produce.minBidPerBox}</p>
+              <p>Min Bid / Box: ₹{produce.minBidAmount}</p>
             </div>
           </div>
         ))}
@@ -173,27 +181,9 @@ export default function FarmerDashboard() {
                 className="w-full border p-2 rounded"
               />
 
-              <input
-                type="number"
-                name="minBidPerBox"
-                value={form.minBidPerBox}
-                onChange={handleChange}
-                placeholder="Minimum Bid per Box"
-                min={1}
-                required
-                className="w-full border p-2 rounded"
-              />
+              
 
-              <select
-                name="bidDurationMinutes"
-                value={form.bidDurationMinutes}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-              >
-                <option value={5}>5 Minutes</option>
-                <option value={10}>10 Minutes</option>
-                <option value={15}>15 Minutes</option>
-              </select>
+             
 
               <div className="flex justify-end gap-2 pt-2">
                 <button

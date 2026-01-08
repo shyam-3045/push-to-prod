@@ -10,20 +10,18 @@ exports.uploadProduce = async (req, res, next) => {
       category,
       totalQuantityKg,
       pricePerKg,
-      minBidPerBox,
-      
     } = req.body;
 
     if (
       !name ||
       !category ||
       !totalQuantityKg ||
-      !pricePerKg ||
-      !minBidPerBox 
+      !pricePerKg  
     ) {
       return next(new AppError("Missing required fields", 400));
     }
     const bidDurationMinutes = 5
+    const minBidAmount = pricePerKg * totalQuantityKg ;
 
     if (!["FRUIT", "VEGETABLE"].includes(category)) {
       return next(new AppError("Invalid category", 400));
@@ -33,7 +31,7 @@ exports.uploadProduce = async (req, res, next) => {
       return next(new AppError("Quantity must be greater than zero", 400));
     }
 
-    if (pricePerKg <= 0 || minBidPerBox <= 0) {
+    if (pricePerKg <= 0 || minBidAmount <= 0) {
       return next(new AppError("Prices must be greater than zero", 400));
     }
 
@@ -49,7 +47,7 @@ exports.uploadProduce = async (req, res, next) => {
       category,
       totalQuantityKg,
       pricePerKg,
-      minBidPerBox,
+      minBidAmount,
       bidDurationMinutes
     });
 

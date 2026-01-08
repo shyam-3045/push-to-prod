@@ -46,7 +46,7 @@ exports.getProduces = async (req, res, next) => {
 
 exports.getWonBids = async (req, res) => {
   try {
-    const retailerId = req.user.id; // from auth middleware
+    const retailerId = req.user.id;
 
     const wonBids = await Bid.find({
       retailerId,
@@ -54,7 +54,7 @@ exports.getWonBids = async (req, res) => {
     })
       .populate({
         path: "produceId",
-        select: "name category totalQuantityKg pricePerKg",
+        select: "name category totalQuantityKg pricePerKg farmerId",
       })
       .sort({ createdAt: -1 });
 
@@ -69,4 +69,30 @@ exports.getWonBids = async (req, res) => {
       message: "Failed to fetch won bids",
     });
   }
+};
+
+exports.getFarmerForWonBid = async (req, res, next) => {
+  const { bidId } = req.params;
+  const retailerId = req.user.id;
+
+  const bid = await Bid.findOne({
+    _id: bidId,
+    retailerId,
+    status: "WON"
+  }).populate({
+    path: "produceId",
+    populate: {
+      path: "farmerId",
+      select: "name email address"
+    }
+  });
+
+  if (!bid) {
+    return next(new AppError("Won bid not found", 404));
+  }
+
+  res.status(200).json({
+    status: "success",
+    data: bid.produceId.farmerId
+  });
 };

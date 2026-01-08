@@ -9,7 +9,7 @@ export interface Produce {
   category: string;
   totalQuantityKg: number;
   pricePerKg: number;
-  minBidPerBox: number;
+  minBidAmount: number;
   bidDurationMinutes: number;
   status: string;
   createdAt: string;
@@ -29,7 +29,7 @@ export interface CreateProducePayload {
   category: "FRUIT" | "VEGETABLE" | "GRAIN";
   totalQuantityKg: number;
   pricePerKg: number;
-  minBidPerBox: number;
+  minBidAmount: number;
   bidDurationMinutes: number;
 }
 
