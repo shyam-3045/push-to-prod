@@ -5,5 +5,6 @@ export const useWonBids = () => {
   return useQuery({
     queryKey: ["won-bids"],
     queryFn: getWonBids,
+    refetchInterval: 5_000
   });
 };

@@ -5,6 +5,6 @@ export const useRunningBids = () => {
   return useQuery({
     queryKey: ["retailer-running-bids"],
     queryFn: getRunningBids,
-    refetchInterval: 10_000, 
+    refetchInterval: 5_000, 
   });
 };

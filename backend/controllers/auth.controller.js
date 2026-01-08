@@ -54,7 +54,7 @@ exports.signup = async (req, res, next) => {
       return next(new AppError("Missing required fields", 400));
     }
 
-    const allowedRoles = ["FARMER", "RETAILER", "TRANSPORTER"];
+    const allowedRoles = ["FARMER", "RETAILER"];
     if (!allowedRoles.includes(role)) {
       return next(new AppError("Invalid role", 400));
     }

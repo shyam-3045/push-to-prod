@@ -72,27 +72,35 @@ exports.getWonBids = async (req, res) => {
 };
 
 exports.getFarmerForWonBid = async (req, res, next) => {
-  const { bidId } = req.params;
   const retailerId = req.user.id;
+  const { bidId } = req.params;
 
   const bid = await Bid.findOne({
     _id: bidId,
     retailerId,
     status: "WON"
-  }).populate({
-    path: "produceId",
-    populate: {
-      path: "farmerId",
-      select: "name email address"
-    }
   });
 
   if (!bid) {
-    return next(new AppError("Won bid not found", 404));
+    return res.status(404).json({
+      status: "error",
+      message: "Won bid not found"
+    });
   }
+
+  const produce = await Produce.findById(bid.produceId);
+  if (!produce) {
+    return res.status(404).json({
+      status: "error",
+      message: "Produce not found"
+    });
+  }
+
+  const farmer = await User.findById(produce.farmerId)
+    .select("name email address");
 
   res.status(200).json({
     status: "success",
-    data: bid.produceId.farmerId
+    data: farmer
   });
 };

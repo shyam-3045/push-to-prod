@@ -9,10 +9,13 @@ router.use(requireRole("RETAILER"));
 
 router.get("/running-bids",getRunningBids)
 router.post("/bid",placeBid)
-router.get("/getProduces",getProduces) // done
+router.get("/getProduces",getProduces) 
 router.get("/myWonBids",getWonBids)
+router.get("/wonBid/:bidId/farmer",getFarmerForWonBid)
+
+
 router.get("/test", (req, res) => {
   res.json({ message: "Retailer OK" });
 });
-router.get("/bids/:bidId/farmer",getFarmerForWonBid)
+
 module.exports = router;

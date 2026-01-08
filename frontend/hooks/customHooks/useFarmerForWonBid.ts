@@ -1,4 +1,3 @@
-// hooks/useFarmerForWonBid.ts
 import { useQuery } from "@tanstack/react-query";
 import { getFarmerForWonBid } from "../services/retailer";
 

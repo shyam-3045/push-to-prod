@@ -5,7 +5,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  role: "FARMER" | "RETAILER" | "TRANSPORTER";
+  role: "FARMER" | "RETAILER" ;
   address: string;
 }
 

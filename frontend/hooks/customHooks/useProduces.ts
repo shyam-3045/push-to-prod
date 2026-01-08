@@ -5,5 +5,6 @@ export const useProduces = () => {
   return useQuery({
     queryKey: ["my-produces"],
     queryFn: getMyProduces,
+    refetchInterval: 60_000
   });
 };

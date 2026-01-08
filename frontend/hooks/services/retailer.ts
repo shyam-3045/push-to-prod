@@ -27,7 +27,7 @@ export const getWonBids = async () => {
 
 export const getFarmerForWonBid = async (bidId: string) => {
   const res = await axios.get(
-    `${API_URL}/retailer/bids/${bidId}/farmer`
+    `${API_URL}/retailer/wonBid/${bidId}/farmer`
   , {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,

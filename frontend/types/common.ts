@@ -8,6 +8,6 @@ export interface SignupFormData {
   name: string;
   email: string;
   password: string;
-  role: "FARMER" | "RETAILER" | "TRANSPORTER";
+  role: "FARMER" | "RETAILER";
   address: string;
 }
