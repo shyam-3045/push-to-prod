@@ -9,6 +9,7 @@ import { useWonBids } from "@/hooks/customHooks/useWonBids";
 import { useFarmerForWonBid } from "@/hooks/customHooks/useFarmerForWonBid";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, User, Package, TrendingUp, Clock, DollarSign, Award, MapPin, Mail, Gavel, Trophy, Zap, CheckCircle } from "lucide-react";
+import { toastSuccess } from "@/utils/toast";
 
 export default function RetailerDashboard() {
   const router = useRouter();
@@ -51,20 +52,20 @@ export default function RetailerDashboard() {
 
     const minimumAllowed = currentBid ? currentBid + 5 : minBid;
     if (bidAmount < minimumAllowed) {
-      alert(`Bid must be at least ₹${minimumAllowed}`);
+      toastSuccess(`Bid must be at least ₹${minimumAllowed}`);
       return;
     }
 
     try {
       const response = await placeBid({ produceId, bidAmount });
-      alert(response.message || "Bid placed successfully");
+      toastSuccess(response.message || "Bid placed successfully");
       console.log("Bid success:", response);
     } catch (error: any) {
       const message =
         error?.response?.data?.message ||
         "Failed to place bid. Please try again.";
 
-      alert(message);
+      toastSuccess(message);
       console.error("Bid failed:", error);
     }
   };
@@ -107,6 +108,7 @@ export default function RetailerDashboard() {
     won: wonBidsData?.data.length || 0,
   };
 
+  console.log(wonBidsData?.data)
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* HEADER */}

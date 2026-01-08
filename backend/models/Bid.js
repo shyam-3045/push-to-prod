@@ -4,12 +4,14 @@ const BidSchema = new mongoose.Schema({
 
   produceId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "Produce", 
     required: true,
     index: true
   },
 
   retailerId: {
     type: mongoose.Schema.Types.ObjectId,
+    ref: "User",  
     required: true,
     index: true
   },
