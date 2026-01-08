@@ -6,7 +6,16 @@ import { useProduces } from "@/hooks/customHooks/useProduces";
 import { useCreateProduce } from "@/hooks/customHooks/useCreateProduce";
 import { Produce, ProduceForm } from "@/types/produce";
 import { useQueryClient } from "@tanstack/react-query";
-import { Plus, LogOut, User, Package, TrendingUp, Clock, DollarSign } from "lucide-react";
+import {
+  Plus,
+  LogOut,
+  User,
+  Package,
+  TrendingUp,
+  Clock,
+  DollarSign,
+} from "lucide-react";
+import { toastFailure } from "@/utils/toast";
 
 export default function FarmerDashboard() {
   const router = useRouter();
@@ -35,6 +44,26 @@ export default function FarmerDashboard() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (Number(form.totalQuantityKg) < 20) {
+      toastFailure("Minumum quantity should be 20 kg");
+      return;
+    }
+
+    if (Number(form.pricePerKg) > 2000) {
+      toastFailure("Maximum price per kg should be 2000");
+      return;
+    }
+    if (Number(form.pricePerKg) < 0) {
+      toastFailure("Minimum bid amount should be positive");
+      return;
+    }
+
+    const name = form.name.trim();
+
+    if (typeof name !== "string" || name.length < 2 || !/[a-zA-Z]/.test(name)) {
+      toastFailure("Produce name must contain letters");
+      return;
+    }
 
     createProduce(
       {
@@ -116,7 +145,9 @@ export default function FarmerDashboard() {
               <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                 My Produces
               </h1>
-              <p className="text-sm text-gray-600 mt-1">Manage your agricultural products</p>
+              <p className="text-sm text-gray-600 mt-1">
+                Manage your agricultural products
+              </p>
             </div>
 
             <div className="flex gap-3">
@@ -152,7 +183,9 @@ export default function FarmerDashboard() {
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-sm font-medium mb-1">Total Produces</p>
+                <p className="text-blue-100 text-sm font-medium mb-1">
+                  Total Produces
+                </p>
                 <h3 className="text-4xl font-bold">{stats.total}</h3>
               </div>
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -164,7 +197,9 @@ export default function FarmerDashboard() {
           <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100 text-sm font-medium mb-1">Open Listings</p>
+                <p className="text-green-100 text-sm font-medium mb-1">
+                  Open Listings
+                </p>
                 <h3 className="text-4xl font-bold">{stats.open}</h3>
               </div>
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -176,7 +211,9 @@ export default function FarmerDashboard() {
           <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-100 text-sm font-medium mb-1">Closed Deals</p>
+                <p className="text-purple-100 text-sm font-medium mb-1">
+                  Closed Deals
+                </p>
                 <h3 className="text-4xl font-bold">{stats.closed}</h3>
               </div>
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
@@ -242,7 +279,9 @@ export default function FarmerDashboard() {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">{produce.name}</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                      {produce.name}
+                    </h2>
                     <span className="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
                       {produce.category}
                     </span>
@@ -262,33 +301,49 @@ export default function FarmerDashboard() {
                   <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Package className="w-5 h-5 text-blue-600" />
-                      <p className="text-xs font-semibold text-blue-800 uppercase">Quantity</p>
+                      <p className="text-xs font-semibold text-blue-800 uppercase">
+                        Quantity
+                      </p>
                     </div>
-                    <p className="text-2xl font-bold text-blue-900">{produce.totalQuantityKg} kg</p>
+                    <p className="text-2xl font-bold text-blue-900">
+                      {produce.totalQuantityKg} kg
+                    </p>
                   </div>
 
                   <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <DollarSign className="w-5 h-5 text-green-600" />
-                      <p className="text-xs font-semibold text-green-800 uppercase">Price/kg</p>
+                      <p className="text-xs font-semibold text-green-800 uppercase">
+                        Price/kg
+                      </p>
                     </div>
-                    <p className="text-2xl font-bold text-green-900">₹{produce.pricePerKg}</p>
+                    <p className="text-2xl font-bold text-green-900">
+                      ₹{produce.pricePerKg}
+                    </p>
                   </div>
 
                   <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <TrendingUp className="w-5 h-5 text-purple-600" />
-                      <p className="text-xs font-semibold text-purple-800 uppercase">Min Bid</p>
+                      <p className="text-xs font-semibold text-purple-800 uppercase">
+                        Min Bid
+                      </p>
                     </div>
-                    <p className="text-2xl font-bold text-purple-900">₹{produce.minBidAmount}</p>
+                    <p className="text-2xl font-bold text-purple-900">
+                      ₹{produce.minBidAmount}
+                    </p>
                   </div>
 
                   <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4">
                     <div className="flex items-center gap-2 mb-2">
                       <Clock className="w-5 h-5 text-orange-600" />
-                      <p className="text-xs font-semibold text-orange-800 uppercase">Duration</p>
+                      <p className="text-xs font-semibold text-orange-800 uppercase">
+                        Duration
+                      </p>
                     </div>
-                    <p className="text-2xl font-bold text-orange-900">{produce.bidDurationMinutes}m</p>
+                    <p className="text-2xl font-bold text-orange-900">
+                      {produce.bidDurationMinutes}m
+                    </p>
                   </div>
                 </div>
               </div>
@@ -308,8 +363,12 @@ export default function FarmerDashboard() {
               <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Package className="w-12 h-12 text-gray-400" />
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">No produces found</h3>
-              <p className="text-gray-600">Get started by adding your first produce!</p>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">
+                No produces found
+              </h3>
+              <p className="text-gray-600">
+                Get started by adding your first produce!
+              </p>
             </div>
           )}
         </div>
@@ -321,12 +380,16 @@ export default function FarmerDashboard() {
           <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl">
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-3xl">
               <h2 className="text-2xl font-bold">Add New Produce</h2>
-              <p className="text-green-100 text-sm mt-1">Fill in the details to list your produce</p>
+              <p className="text-green-100 text-sm mt-1">
+                Fill in the details to list your produce
+              </p>
             </div>
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Produce Name</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Produce Name
+                </label>
                 <input
                   name="name"
                   value={form.name}
@@ -337,7 +400,9 @@ export default function FarmerDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Category
+                </label>
                 <select
                   name="category"
                   value={form.category}
@@ -351,7 +416,9 @@ export default function FarmerDashboard() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Quantity (kg)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Quantity (kg)
+                  </label>
                   <input
                     type="number"
                     name="totalQuantityKg"
@@ -364,7 +431,9 @@ export default function FarmerDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Price/kg (₹)</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Price/kg (₹)
+                  </label>
                   <input
                     type="number"
                     name="pricePerKg"
