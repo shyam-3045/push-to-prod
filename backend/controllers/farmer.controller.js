@@ -1,6 +1,7 @@
 const Produce = require("../models/Produce");
 const AppError = require("../utils/AppError");
 
+
 exports.uploadProduce = async (req, res, next) => {
   try {
     const {
@@ -9,7 +10,7 @@ exports.uploadProduce = async (req, res, next) => {
       totalQuantityKg,
       pricePerKg,
       minBidPerBox,
-      harvestDate
+      bidDurationMinutes
     } = req.body;
 
     if (
@@ -18,7 +19,7 @@ exports.uploadProduce = async (req, res, next) => {
       !totalQuantityKg ||
       !pricePerKg ||
       !minBidPerBox ||
-      !harvestDate
+      !bidDurationMinutes
     ) {
       return next(new AppError("Missing required fields", 400));
     }
@@ -27,25 +28,18 @@ exports.uploadProduce = async (req, res, next) => {
       return next(new AppError("Invalid category", 400));
     }
 
-    if (totalQuantityKg < 20 || totalQuantityKg % 20 !== 0) {
-      return next(
-        new AppError("Total quantity must be in multiples of 20kg", 400)
-      );
+    if (totalQuantityKg <= 0) {
+      return next(new AppError("Quantity must be greater than zero", 400));
     }
 
     if (pricePerKg <= 0 || minBidPerBox <= 0) {
       return next(new AppError("Prices must be greater than zero", 400));
     }
 
-    const calculatedMinBid = pricePerKg * 20;
-    if (minBidPerBox < calculatedMinBid) {
+    if (![30, 60, 120].includes(bidDurationMinutes)) {
       return next(
-        new AppError("Minimum bid cannot be less than base price per box", 400)
+        new AppError("Invalid bid duration. Allowed: 30, 60, 120 minutes", 400)
       );
-    }
-
-    if (new Date(harvestDate) > new Date()) {
-      return next(new AppError("Harvest date cannot be in the future", 400));
     }
 
     const produce = await Produce.create({
@@ -55,7 +49,7 @@ exports.uploadProduce = async (req, res, next) => {
       totalQuantityKg,
       pricePerKg,
       minBidPerBox,
-      harvestDate
+      bidDurationMinutes
     });
 
     res.status(201).json({

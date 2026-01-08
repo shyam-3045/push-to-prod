@@ -22,13 +22,7 @@ const ProduceSchema = new mongoose.Schema({
   totalQuantityKg: {
     type: Number,
     required: true,
-    min: 20
-  },
-
-  boxSizeKg: {
-    type: Number,
-    default: 20,
-    immutable: true
+    min: 1
   },
 
   pricePerKg: {
@@ -43,10 +37,14 @@ const ProduceSchema = new mongoose.Schema({
     min: 1
   },
 
-  harvestDate: {
-    type: Date,
-    required: true
+  bidDurationMinutes: {
+    type: Number,
+    required: true,
+    enum: [30, 60, 120]
   },
+
+  bidStartTime: Date,
+  bidEndTime: Date,
 
   status: {
     type: String,
