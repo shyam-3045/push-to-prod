@@ -22,7 +22,7 @@ const ProduceSchema = new mongoose.Schema({
   totalQuantityKg: {
     type: Number,
     required: true,
-    min: 1
+    min: 20
   },
 
   boxSizeKg: {
@@ -37,6 +37,12 @@ const ProduceSchema = new mongoose.Schema({
     min: 1
   },
 
+  minBidPerBox: {
+    type: Number,
+    required: true,
+    min: 1
+  },
+
   harvestDate: {
     type: Date,
     required: true
@@ -44,7 +50,7 @@ const ProduceSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["LISTED", "CLOSED"],
+    enum: ["LISTED", "BIDDING", "CLOSED"],
     default: "LISTED"
   }
 

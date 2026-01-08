@@ -1,15 +1,17 @@
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/UserSchema");
 const AppError = require("../utils/AppError");
-const { signToken } = require("../utils/jwt");
 
-
+/**
+ * LOGIN
+ */
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return next(new AppError("email and password required", 400));
+      return next(new AppError("Email and password required", 400));
     }
 
     const user = await User.findOne({ email });
@@ -22,8 +24,14 @@ exports.login = async (req, res, next) => {
       return next(new AppError("Invalid credentials", 401));
     }
 
-    const token = signToken(user);
-    console.log(token)
+    const token = jwt.sign(
+      {
+        sub: user._id,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.status(200).json({
       status: "success",
@@ -39,7 +47,9 @@ exports.login = async (req, res, next) => {
   }
 };
 
-
+/**
+ * SIGNUP
+ */
 exports.signup = async (req, res, next) => {
   try {
     const { name, email, password, role, address } = req.body;
@@ -68,7 +78,14 @@ exports.signup = async (req, res, next) => {
       address
     });
 
-    const token = signToken(user);
+    const token = jwt.sign(
+      {
+        sub: user._id,
+        role: user.role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
 
     res.status(201).json({
       status: "success",

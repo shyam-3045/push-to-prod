@@ -5,7 +5,7 @@ const { requireAuth, requireRole } = require("../middleware/auth.middleware");
 router.use(requireAuth);
 router.use(requireRole("TRANSPORTER"));
 
-router.get("/dashboard", (req, res) => {
+router.get("/test", (req, res) => {
   res.json({ message: "Transporter OK" });
 });
 
