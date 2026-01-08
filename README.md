@@ -8,29 +8,28 @@ The system focuses on **fair pricing**, **controlled bidding**, while maintainin
 
 This platform is intentionally designed to be **deterministic, role-aware, and state-driven**, ensuring predictable behavior under normal usage as well as under stress.
 
-
 ## Core Roles
 
 ### Farmer (Producer)
+
 - Uploads fruits and vegetables to the platform.
 - Controls when produce is listed for sale.
 - Hands over produce only after successful sale (biding).
 
 ### Retailer / Wholesaler (Buyer)
+
 - Views listed produce.
 - Competes for produce via live bidding.
 - Confirms purchase after winning an auction.
 
-
 ## High-Level System Flow
 
-
 Each stage follows a **strict order** and cannot be skipped.
-
 
 ## Produce Listing Workflow
 
 1. Farmer uploads produce with:
+
    - Name
    - Category (Fruit / Vegetable)
    - Total quantity
@@ -40,11 +39,11 @@ Each stage follows a **strict order** and cannot be skipped.
 2. Produce is listed as a **single auction unit**, for which the bids are placed.
 
 3. Once listed:
+
    - Produce details become fixed.
    - Bidding becomes available to buyers. And they can initiate the bidings.
 
-4. Produce remains visible until the auction closes. And at any point of time any retailer can join the auction. 
-
+4. Produce remains visible until the auction closes. And at any point of time any retailer can join the auction.
 
 ## Bidding Workflow
 
@@ -55,35 +54,36 @@ Each stage follows a **strict order** and cannot be skipped.
 - The current highest bidder cannot bid again unless he is outbid.
 
 Key characteristics:
+
 - Any buyer may enter bidding at any point before closing.
 - Only the highest valid bid at closing is considered the winner.
 - The system always maintains a single authoritative highest bid.
 
-
-## Winner Confirmation 
+## Winner Confirmation
 
 1. The highest bidder is notified after auction closure.
 2. The bidder must explicitly **accept or reject** the purchase.
 3. If accepted:
-    - The auction is closed.
-4. If rejected: 
-    - The system automatically assigns the next highest eligible bidder, and the same Winner Confirmation is repeated for the new winner.
+   - The auction is closed.
+4. If rejected:
+   - The system automatically assigns the next highest eligible bidder, and the same Winner Confirmation is repeated for the new winner.
 
 If no bids exist:
+
 1. The produce is marked as UNSOLD
 
 ## System Characteristics
 
 ### Role-Based Access
+
 - Only farmers can create produce listings.
 - Only retailers/wholesalers can start and place bids.
 
-
 ### State-Driven Workflow
+
 Each produce listing moves through a controlled lifecycle:
 
 CREATED → BIDDING → CLOSED → CONFIRMED / UNSOLD
-
 
 ## What the System Guarantees
 
@@ -100,22 +100,27 @@ Farm2Retail is not just a marketplace; it is a **controlled auction system** bui
 ### Key Advantages
 
 - **Fair Price Discovery**
+
   - Eliminates middlemen-driven price manipulation
   - Farmers receive competitive market-driven prices
 
 - **Deterministic Auction Logic**
+
   - Every auction follows strict, predictable rules
   - No ambiguity in winner selection or bid evaluation
 
 - **Role-Isolated Design**
+
   - Clear separation of responsibilities
   - Prevents unauthorized actions and misuse
 
 - **Server-Authoritative Workflow**
+
   - All critical decisions are handled on the backend
   - Client-side manipulation does not affect outcomes
 
 - **Scalable & Modular Architecture**
+
   - Auction logic is isolated from authentication and UI
   - Enables future extensions (logistics, analytics, AI insights)
 
@@ -128,25 +133,28 @@ Farm2Retail is not just a marketplace; it is a **controlled auction system** bui
 ## 🌍 Real-World Impact
 
 ### For Farmers
+
 - Transparent and competitive pricing for produce
 - Direct access to retailers without dependency on intermediaries
 - Increased trust in the selling process
 
 ### For Retailers / Wholesalers
+
 - Clear visibility into active auctions
 - Equal opportunity to participate in price discovery
 - Reduced risk of unfair allocation or hidden pricing
 
 ### For Agricultural Supply Chains
+
 - Promotes fairness and transparency
 - Encourages market-driven valuation
 - Lays the foundation for scalable digital agri-commerce platforms
 
 This model can be extended to:
+
 - Regional produce exchanges
 - Cooperative farming auctions
 - Digital mandis and agri-marketplaces
-
 
 ## 🎥 Demo
 
@@ -156,19 +164,17 @@ A working demonstration of the platform is available here:
 👉 [_\[Video Link\]_](https://vimeo.com/1152642626?share=copy&fl=sv&fe=ci)
 
 The demo walks through:
+
 - User registration and login
 - Farmer produce listing
 - Live bidding by multiple retailers
 - Auction closure and winner confirmation
 
-
-
 ## 📡 API Documentation
 
 All APIs are protected using **JWT Authentication** and **Role-Based Access Control (RBAC)**.  
 Unauthorized access attempts are rejected server-side.
-
-
+Get tokens from Local Storage.
 
 ## 🔐 Authentication APIs
 
@@ -185,6 +191,7 @@ Registers a new user in the system, either as a Farmer or Retailer based on the 
 `api/auth/signup`
 
 **Request Body**
+
 ```json
 {
   "name": "Abc",
@@ -193,10 +200,10 @@ Registers a new user in the system, either as a Farmer or Retailer based on the 
   "role": "farmer",
   "address": "520, 5th Street, Coimbatore - 641102"
 }
-
 ```
 
 **Success Response (201)**
+
 ```json
 {
   "success": true,
@@ -205,6 +212,7 @@ Registers a new user in the system, either as a Farmer or Retailer based on the 
 ```
 
 **Error Response**
+
 ```json
 {
   "success": false,
@@ -212,7 +220,7 @@ Registers a new user in the system, either as a Farmer or Retailer based on the 
 }
 ```
 
-### 2. User Login 
+### 2. User Login
 
 **Description**  
 Authenticates a user and returns a JWT token for authorized access.**Retailer**.
@@ -224,6 +232,7 @@ Authenticates a user and returns a JWT token for authorized access.**Retailer**.
 `/api/auth/login`
 
 **Request Body**
+
 ```json
 {
   "email": "abc@gmail.com",
@@ -232,6 +241,7 @@ Authenticates a user and returns a JWT token for authorized access.**Retailer**.
 ```
 
 **Success Response (200)**
+
 ```json
 {
   "success": true,
@@ -240,6 +250,7 @@ Authenticates a user and returns a JWT token for authorized access.**Retailer**.
 ```
 
 **Error Response**
+
 ```json
 {
   "success": false,
@@ -247,8 +258,8 @@ Authenticates a user and returns a JWT token for authorized access.**Retailer**.
 }
 ```
 
+## 👨‍🌾 Farmer APIs
 
-## 👨‍🌾 Farmer APIs 
 These APIs are accessible only to users with FARMER role.
 
 ### 1. Create Produce
@@ -263,6 +274,7 @@ Allows a Farmer to list agricultural produce for sale or bidding.**Retailer**.
 `/api/farmer/createProduce`
 
 **Request Body**
+
 ```json
 {
   "name": "Tomato",
@@ -273,6 +285,7 @@ Allows a Farmer to list agricultural produce for sale or bidding.**Retailer**.
 ```
 
 **Success Response (201)**
+
 ```json
 {
   "success": true,
@@ -282,6 +295,7 @@ Allows a Farmer to list agricultural produce for sale or bidding.**Retailer**.
 ```
 
 **Error Response**
+
 ```json
 {
   "success": false,
@@ -290,10 +304,9 @@ Allows a Farmer to list agricultural produce for sale or bidding.**Retailer**.
 ```
 
 ## 🏪 Retailer APIs
-All Retailer APIs require JWT Authentication    
+
+All Retailer APIs require JWT Authentication  
 Only users with RETAILER role can access these endpoints.
-
-
 
 ### 1. Get Available Produces
 
@@ -307,6 +320,7 @@ Fetches all produce listings currently available for bidding.**Retailer**.
 `/api/retailer/getProduces`
 
 **Success Response (200)**
+
 ```json
 {
   "status": "success",
@@ -333,13 +347,13 @@ Fetches all produce listings currently available for bidding.**Retailer**.
 ```
 
 **Error Response**
+
 ```json
 {
   "success": false,
   "message": "Unauthorized access"
 }
 ```
-
 
 ### 2. Place a Bid
 
@@ -353,6 +367,7 @@ Allows a retailer to place a bid on a produce listing currently open for bidding
 `/api/retailer/bid`
 
 **Request Body**
+
 ```json
 {
   "produceId": "string",
@@ -361,6 +376,7 @@ Allows a retailer to place a bid on a produce listing currently open for bidding
 ```
 
 **Success Response (200)**
+
 ```json
 {
   "status": "success",
@@ -369,13 +385,13 @@ Allows a retailer to place a bid on a produce listing currently open for bidding
 ```
 
 **Error Response**
+
 ```json
 {
   "status": "fail",
   "message": "Bidding window closed"
 }
 ```
-
 
 ### 3. Get All Running Bids
 
@@ -390,6 +406,7 @@ Fetch all currently active bidding products and current highest bids.
 `/api/retailer/running-bids`
 
 **Success Response (200)**
+
 ```json
 {
   "status": "success",
@@ -425,10 +442,10 @@ Fetch all currently active bidding products and current highest bids.
     }
   ]
 }
-
 ```
 
 **Error Response**
+
 ```json
 {
   "status": "fail",
@@ -436,97 +453,96 @@ Fetch all currently active bidding products and current highest bids.
 }
 ```
 
-
 ## 🐳 Docker Setup & Deployment
 
 The Farm2Retail platform is fully containerized using Docker.  
 The system uses **separate containers for frontend and backend**, orchestrated via **Docker Compose** for simplified deployment.
 
 This setup ensures:
+
 - Environment consistency
 - Easy local and production deployment
 - Clear separation of concerns
 
-
 ## 📦 Docker Components Overview
 
-| Component | Technology | Description |
-|---------|------------|-------------|
-| Frontend | Next.js | Multi-stage Docker build for optimized production |
-| Backend | Node.js | REST API and business logic |
-| Orchestration | Docker Compose | Runs frontend and backend together |
-
+| Component     | Technology     | Description                                       |
+| ------------- | -------------- | ------------------------------------------------- |
+| Frontend      | Next.js        | Multi-stage Docker build for optimized production |
+| Backend       | Node.js        | REST API and business logic                       |
+| Orchestration | Docker Compose | Runs frontend and backend together                |
 
 ## 📁 Project Structure
-
-
 
 ## 🖥️ Frontend Dockerfile (Next.js – Multi-Stage Build)
 
 **Purpose**
+
 - Builds and serves the Next.js frontend efficiently
 - Reduces final image size
 - Separates build and runtime environments
 
 **Key Characteristics**
+
 - Uses multi-stage build
 - Installs dependencies only once
 - Serves optimized production build
 
 **Outcome**
+
 - Lightweight production-ready frontend container
 - No development dependencies in final image
-
 
 ## ⚙️ Backend Dockerfile (Node.js API)
 
 **Purpose**
+
 - Runs the backend REST API
 - Handles authentication, produce listing, and bidding logic
 
 **Key Characteristics**
+
 - Installs backend dependencies
 - Exposes API port
 - Runs server in production mode
 
 **Outcome**
+
 - Isolated backend service
 - Consistent runtime environment
-
 
 ## 🔗 Docker Compose Configuration
 
 **Purpose**
+
 - Orchestrates frontend and backend containers
 - Enables inter-container communication
 - Simplifies startup and teardown
 
 **Key Responsibilities**
+
 - Builds images from respective Dockerfiles
 - Defines service dependencies
 - Maps ports for external access
 - Manages shared network
 
-
 ## ▶️ Running the Application
 
 ### Prerequisites
+
 - Docker installed
 - Docker Compose installed
 
-
-
 ### Start the Application
+
 From the project root:
 
 ```bash
-docker-compose up --build 
+docker-compose up --build
 ```
 
 Frontend URL = https://push-to-prod-kyqy.vercel.app
 Backend URL = https://push-to-prod.onrender.com
-
-
 
 ## 📌 Final Note
 
