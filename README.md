@@ -58,15 +58,11 @@ Key characteristics:
 - Any buyer may enter bidding at any point before closing.
 - Only the highest valid bid at closing is considered the winner.
 - The system always maintains a single authoritative highest bid.
+- During the final moments of the auction(2 minutes), the bidders can bid only once.
 
 ## Winner Confirmation
 
 1. The highest bidder is notified after auction closure.
-2. The bidder must explicitly **accept or reject** the purchase.
-3. If accepted:
-   - The auction is closed.
-4. If rejected:
-   - The system automatically assigns the next highest eligible bidder, and the same Winner Confirmation is repeated for the new winner.
 
 If no bids exist:
 
@@ -84,6 +80,13 @@ If no bids exist:
 Each produce listing moves through a controlled lifecycle:
 
 CREATED → BIDDING → CLOSED → CONFIRMED / UNSOLD
+
+### Polling Implementation
+
+Every 3 seconds, Polling occurs
+
+- Webscocket is not implemented for real-time bidding due to time constraint and vulnerabilities issue because of open-socket connection.
+- Even Leetcode - a widely used Website for Competitive Programming, uses Polling technique.
 
 ## What the System Guarantees
 
