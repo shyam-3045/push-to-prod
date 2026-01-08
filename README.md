@@ -522,25 +522,11 @@ From the project root:
 ```bash
 docker-compose up --build 
 ```
-try if works :
-frontend hosted : https://push-to-prod-kyqy.vercel.app
+
+Frontend URL = https://push-to-prod-kyqy.vercel.app
+Backend URL = https://push-to-prod.onrender.com
 
 
-Frontend URL = http://localhost:3000
-Backend URL = http://localhost:5000
-
-frontend .env :
-```
-NEXT_PUBLIC_API_URL="http://localhost:5000/api"
-```
-backend .env:
-```
-PORT = 5000
-MONGO_URL = mongodb+srv://PushToProd:pushtoprod@cluster0.ygloe39.mongodb.net/?appName=Cluster0
-JWT_SECRET=orusmallsecret
-JWT_EXPIRES="1d"
-FRONTEND_URL=http://localhost:3000
-```
 
 ## 📌 Final Note
 
