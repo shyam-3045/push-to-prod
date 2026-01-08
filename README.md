@@ -522,6 +522,9 @@ From the project root:
 ```bash
 docker-compose up --build 
 ```
+try if works :
+frontend hosted : https://push-to-prod-kyqy.vercel.app
+
 
 Frontend URL = http://localhost:3000
 Backend URL = http://localhost:5000
