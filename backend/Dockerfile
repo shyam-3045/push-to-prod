@@ -1,4 +1,4 @@
-FROM node:18 AS builder
+FROM node:18
 
 WORKDIR /app
 
@@ -7,12 +7,6 @@ RUN npm install
 
 COPY . .
 
-
-FROM node:18
-
-WORKDIR /app
-
-COPY --from=builder /app ./
-
 EXPOSE 5000
-CMD ["npm", "run","dev"]
+
+CMD ["npm", "start"]
