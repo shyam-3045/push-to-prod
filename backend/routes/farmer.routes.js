@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { requireAuth, requireRole } = require("../middleware/auth.middleware");
-const { uploadProduce } = require("../controllers/farmer.controller");
+const { uploadProduce, getMyBids, getMyProduces, getRetailerById } = require("../controllers/farmer.controller");
 
 router.use(requireAuth);
 router.use(requireRole("FARMER"));
@@ -11,5 +11,7 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/createProduce",uploadProduce)
-
+router.get("/retailer/:id",getRetailerById )
+router.get("/getMyProduces",getMyProduces)
+router.get("/produce/:produceId/result",getMyBids)
 module.exports = router;

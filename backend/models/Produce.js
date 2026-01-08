@@ -40,7 +40,7 @@ const ProduceSchema = new mongoose.Schema({
   bidDurationMinutes: {
     type: Number,
     required: true,
-    enum: [30, 60, 120]
+    enum: [5,10,15]
   },
 
   bidStartTime: Date,

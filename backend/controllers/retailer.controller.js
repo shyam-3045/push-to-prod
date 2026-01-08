@@ -1,6 +1,7 @@
 const Produce = require("../models/Produce");
 const User = require("../models/UserSchema");
 const AppError = require("../utils/AppError");
+const Bid = require("../models/Bid");
 
 exports.getProduces = async (req, res, next) => {
   try {
@@ -40,5 +41,32 @@ exports.getProduces = async (req, res, next) => {
 
   } catch (error) {
     next(error);
+  }
+};
+
+exports.getWonBids = async (req, res) => {
+  try {
+    const retailerId = req.user.id; // from auth middleware
+
+    const wonBids = await Bid.find({
+      retailerId,
+      status: "WON",
+    })
+      .populate({
+        path: "produceId",
+        select: "name category totalQuantityKg pricePerKg",
+      })
+      .sort({ createdAt: -1 });
+
+    res.json({
+      status: "success",
+      count: wonBids.length,
+      data: wonBids,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch won bids",
+    });
   }
 };

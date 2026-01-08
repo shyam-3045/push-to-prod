@@ -1,6 +1,7 @@
 const Produce = require("../models/Produce");
 const AppError = require("../utils/AppError");
-
+const Bid = require("../models/Bid");
+const User = require("../models/UserSchema");
 
 exports.uploadProduce = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ exports.uploadProduce = async (req, res, next) => {
       totalQuantityKg,
       pricePerKg,
       minBidPerBox,
-      bidDurationMinutes
+      
     } = req.body;
 
     if (
@@ -18,11 +19,11 @@ exports.uploadProduce = async (req, res, next) => {
       !category ||
       !totalQuantityKg ||
       !pricePerKg ||
-      !minBidPerBox ||
-      !bidDurationMinutes
+      !minBidPerBox 
     ) {
       return next(new AppError("Missing required fields", 400));
     }
+    const bidDurationMinutes = 5
 
     if (!["FRUIT", "VEGETABLE"].includes(category)) {
       return next(new AppError("Invalid category", 400));
@@ -36,9 +37,9 @@ exports.uploadProduce = async (req, res, next) => {
       return next(new AppError("Prices must be greater than zero", 400));
     }
 
-    if (![30, 60, 120].includes(bidDurationMinutes)) {
+    if (![5,10,15].includes(bidDurationMinutes)) {
       return next(
-        new AppError("Invalid bid duration. Allowed: 30, 60, 120 minutes", 400)
+        new AppError("Invalid bid duration. Allowed: 5,10,15 minutes", 400)
       );
     }
 
@@ -59,5 +60,78 @@ exports.uploadProduce = async (req, res, next) => {
 
   } catch (err) {
     next(err);
+  }
+};
+
+exports.getMyProduces = async (req, res, next) => {
+  try {
+    const farmerId = req.user.id;
+
+    const produces = await Produce.find({ farmerId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    res.status(200).json({
+      status: "success",
+      count: produces.length,
+      data: produces
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+exports.getMyBids =  async (req, res, next) => {
+  try {
+    const farmerId = req.user.id;
+    const { produceId } = req.params;
+
+    const produce = await Produce.findOne({
+      _id: produceId,
+      farmerId,
+      status: "CLOSED"
+    });
+
+    if (!produce) {
+      return next(new AppError("Produce not found or bidding not closed", 404));
+    }
+
+    const winningBid = await Bid.findOne({
+      produceId,
+      status: "WON"
+    }).select("bidAmount retailerId createdAt");
+
+    res.status(200).json({
+      status: "success",
+      produce,
+      winningBid
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getRetailerById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select("name email role address");
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    res.json({
+      status: "success",
+      data: user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "error",
+      message: "Failed to fetch user details",
+    });
   }
 };

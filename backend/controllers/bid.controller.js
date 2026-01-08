@@ -1,3 +1,4 @@
+const { closeExpiredAuctions } = require("../config/closeExpiredAuctions");
 const Bid = require("../models/Bid");
 const Produce = require("../models/Produce");
 const AppError = require("../utils/AppError");
@@ -18,7 +19,7 @@ exports.placeBid = async (req, res, next) => {
 
     const now = new Date();
 
-    // 1️⃣ Auto start bidding
+    
     if (produce.status === "LISTED") {
       produce.bidStartTime = now;
       produce.bidEndTime = new Date(
@@ -28,52 +29,60 @@ exports.placeBid = async (req, res, next) => {
       await produce.save();
     }
 
-    // 2️⃣ Window check
+    
+    if (produce.status !== "BIDDING") {
+      return next(new AppError("Bidding not active", 400));
+    }
+
+    
     if (now > produce.bidEndTime) {
       return next(new AppError("Bidding window closed", 400));
     }
 
-    // 3️⃣ Minimum bid
+   
     if (bidAmount < produce.minBidPerBox) {
       return next(new AppError("Bid below minimum allowed", 400));
     }
 
-    // 4️⃣ Get current highest bid
+   
     const highestBid = await Bid.findOne({
       produceId,
       status: "ACTIVE"
     }).sort({ bidAmount: -1 });
 
-    // 5️⃣ Leader cannot rebid
+    
     if (highestBid && highestBid.retailerId.toString() === retailerId) {
-      return next(new AppError("You are already the highest bidder", 400));
+      return next(
+        new AppError("You are already the highest bidder", 400)
+      );
     }
 
-    // 6️⃣ Must beat highest
+   
     if (highestBid && bidAmount <= highestBid.bidAmount) {
-      return next(new AppError(
-        "Bid must be higher than current highest bid",
-        400
-      ));
+      return next(
+        new AppError("Bid must be higher than current highest bid", 400)
+      );
     }
 
-    // 7️⃣ Last 5 min lock
+    
     const timeLeft = produce.bidEndTime - now;
-    if (timeLeft <= 5 * 60 * 1000) {
+    if (timeLeft <= 2 * 60 * 1000) {
       const alreadyBid = await Bid.findOne({
         produceId,
         retailerId
       });
 
       if (alreadyBid) {
-        return next(new AppError(
-          "Only one bid allowed in final 5 minutes",
-          400
-        ));
+        return next(
+          new AppError(
+            "Only one bid allowed in final 2 minutes",
+            400
+          )
+        );
       }
     }
 
-    // 8️⃣ Demote old leader
+    
     if (highestBid) {
       await Bid.updateOne(
         { _id: highestBid._id },
@@ -81,7 +90,7 @@ exports.placeBid = async (req, res, next) => {
       );
     }
 
-    // 9️⃣ Upsert retailer bid (atomic by index)
+    
     await Bid.findOneAndUpdate(
       { produceId, retailerId },
       {
@@ -104,8 +113,10 @@ exports.placeBid = async (req, res, next) => {
 };
 
 
+
 exports.getRunningBids = async (req, res, next) => {
   try {
+    await closeExpiredAuctions();
     const now = new Date();
 
     const runningBids = await Produce.aggregate([

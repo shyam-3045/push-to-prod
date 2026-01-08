@@ -3,9 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/UserSchema");
 const AppError = require("../utils/AppError");
 
-/**
- * LOGIN
- */
+
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -47,9 +45,7 @@ exports.login = async (req, res, next) => {
   }
 };
 
-/**
- * SIGNUP
- */
+
 exports.signup = async (req, res, next) => {
   try {
     const { name, email, password, role, address } = req.body;
