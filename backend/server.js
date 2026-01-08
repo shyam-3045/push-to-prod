@@ -2,15 +2,25 @@ const express = require("express")
 const app=express()
 const cors=require("cors")
 const rateLimit = require("express-rate-limit")
-const dotenv=require("dotenv")
 const ConnectDb = require("./config/DBConnection")
-dotenv.config()
+const authRoutes = require("./routes/auth.route")
+const farmerRoutes = require("./routes/farmer.routes")
+const retailerRoutes = require("./routes/retailer.route")
+const transporterRoutes = require("./routes/transproter.route")
+const errorHandler = require("./middleware/error.middleware")
+require("dotenv").config(); 
 
-const PORT =  process.env.PORT
+const PORT =  process.env.PORT || 5000
 
 app.use(express.json({limit:"10kb"}))
 app.use(express.urlencoded({limit:"10kb",extended:true}))
-app.use(cors())
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5000",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}))
 const globalLimiter = rateLimit({
   windowMs: 60 * 1000,   
   max: 100,              
@@ -24,6 +34,7 @@ const globalLimiter = rateLimit({
 });
 
 app.use(globalLimiter);
+
 app.use((req, res, next) => {
   res.setTimeout(5000, () => {
     res.status(408).json({ error: "Request timeout" });
@@ -32,13 +43,14 @@ app.use((req, res, next) => {
 });
 
 
+app.use("/api/auth", authRoutes);
+app.use("/api/farmer", farmerRoutes);
+app.use("/api/retailer", retailerRoutes);
+app.use("/api/transporter", transporterRoutes);
 
 
-app.get("/",(req,res)=>
-{
-    res.send("hiii")
-    console.log("getting requests")
-})
+
+app.use(errorHandler);
 
 ConnectDb()
 
